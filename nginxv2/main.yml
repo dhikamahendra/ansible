@@ -1,4 +1,4 @@
-- hosts: 10.0.50.187
+- hosts: webserver
   tasks:
   - name: install epel-repo
     yum:
