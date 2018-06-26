@@ -29,7 +29,7 @@
     service: name=firewalld state=reloaded
 
   - name: copy folder
-    copy: src=/root/omaewamoshindeiru/roles/web/templates/web1/index.html dest=/usr/share/nginx/html/index.html
+    copy: src=index.html dest=/usr/share/nginx/html/index.html
 
   - name: restart lagi webnya
     service: name=nginx state=restarted
