@@ -1,0 +1,64 @@
+ - hosts: tarball
+
+  tasks:
+  - name: create directory
+    file:
+     path: /opt/httpd-2.4.33
+     state: directory
+  
+  - name: download apache
+    unarchive:
+     src: http://apache.cbox.biz//httpd/httpd-2.4.33.tar.bz2
+     dest: /usr/local/src
+     remote_src: yes
+
+  - name: download dependecies part1
+    unarchive:
+     src: http://apache.cbox.biz//apr/apr-1.6.3.tar.bz2
+     dest: /usr/local/src/httpd-2.4.33/srclib
+     remote_src: yes
+
+  - name: buat directory
+    file:
+     path: /usr/local/src/httpd-2.4.33/srclib/apr
+     state: directory
+
+  - name: move apr
+    command: mv /usr/local/src/httpd-2.4.33/srclib/apr-1.6.3 /usr/local/src/httpd-2.4.33/srclib/apr
+
+  - name: part 2 nya
+    unarchive:
+     src: http://apache.cbox.biz//apr/apr-util-1.6.1.tar.bz2
+     dest: /usr/local/src/httpd-2.4.33/srclib
+     remote_src: yes
+  
+  - name: buat directory lagi
+    file:
+     path: /usr/local/src/httpd-2.4.33/srclib/apr-util
+     state: directory
+
+  - name: move apr utils
+    command: mv /usr/local/src/httpd-2.4.33/srclib/apr-util-1.6.1 /usr/local/src/httpd-2.4.33/srclib/apr-util
+
+  - name: part 3
+    yum:
+     name: pcre-devel
+     state: latest
+
+  - name: configure bro
+    command: "{{ item }}"
+    args:
+     chdir: /usr/local/src/httpd-2.4.33
+    with_items:
+     - ./configure --prefix=/opt/httpd-2.4.33 --enable-opcache
+     - make
+     - make install
+
+  - name: copy file konfig http
+    copy: src=httpd.conf dest=/opt/httpd-2.4.33/conf/httpd.conf
+
+  - name: start gaes
+    command: /opt/httpd-2.4.33/bin/apachectl start
+
+  - name: create file ea
+    command: echo "<?php phpinfo();" >> /var/www/info.php
