@@ -1,0 +1,71 @@
+---
+  - name: RHV VM Provisioning
+    hosts: localhost
+    connection: local
+    vars:
+      #rhv_ip: 'rhvmbsd.telkomsel.co.id'
+      #rhv_ip: '{{ cluster_ip }}'
+      #vm_template: 'RHEL7.3-template_test'
+      #vm_cluster: 'CLUSTER_BSD_01'
+      vm_event: 'create'
+    tasks:
+      - block: 
+          - name: Obtain SSO Token with using username/password credentials
+            ovirt_auth: 
+              url: https://mgmt.rhv.internal.bajau.com/ovirt-engine/api
+              username: admin@internal
+              password: p@ssw0rd@321
+              insecure: true
+          - name: Create VM from kopong
+            ovirt_vms: 
+              state: present
+              name: this-is-vm
+              cluster: bc21a
+              memory: 1GiB
+              type: server
+              host: rhvh03
+              operating_system: other_linux_ppc64
+              disks:
+               - name: rhvprov-test
+               - bootable: true
+              cd_iso: CentOS-7-x86_64-DVD-1611.iso
+              boot_devices:
+               - cdrom
+              cpu_cores: 1
+              cpu_sockets: 1
+              nics:
+                - name: nic1
+                  profile_name: ovirtmgmt
+              cloud_init: 
+                host_name: this-is-vm
+                nic_boot_protocol: static
+                nic_ip_address: 10.0.50.19
+                nic_netmask: 255.255.255.0
+                nic_gateway: 10.0.50.1
+                nic_name: eth0
+                nic_on_boot: true
+                dns_servers: 8.8.8.8 
+                #custom_script: |
+                  #cloud-config
+                  #runcmd:
+                  #  - ['hostnamectl','set-hostname','{{ vm_name  }}']
+
+          - name: eject iso
+            ovirt_vms:
+             name: this-is-vm
+             cd_iso: ''
+          - name: restart vm
+            ovirt_vms:
+             name: this-is-vm
+             state: restarted
+          - name: change first boot
+            ovirt_vms:
+             name: this-is-vm
+             state: next_run
+             boot_devices:
+              - hd
+
+        always:
+          - name: Always revoke the SSO token
+            ovirt_auth:
+              state: absent
