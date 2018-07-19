@@ -1,0 +1,13 @@
+- name: add host to group
+  hosts: localhost
+  tasks:
+    - name: variabel
+      include_vars: host.yml
+
+    - name: add host
+      add_host:
+       name: "{{ haha_host }}"
+       groups: test
+    
+- name: add symlink
+  include: symlink.yml
