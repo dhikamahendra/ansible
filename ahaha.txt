@@ -1,0 +1,9 @@
+hello , how are you?
+nice to speak you.
+on this video , i will give you some tutorial to deploy an app to jboss eap and owl with xldeploy .
+what is xldeploy ? xldeploy is automation tools to deploy app on your target server. this is agentless tools and across all target platform. for advance explanation , you can access https://docs.xebialabs.com/xl-deploy.
+first ,you must access and login to xldeploy web-ui.
+you can access with your ip/server name with port 4516 in your browser and then login with your account ( the default account is created while you installing xldeploy ).
+ok, i will use chrome to access xldeploy web-ui on this tutorial. and then login.
+you will see the xldeploy dashboard page when you're logging. this dashboard is called explorer
+on the top bar , you will see the menu of xldeploy. on the left-side you will see the library. on the library 
